@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group
+        android:id="@+id/nav_group" android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_rubric"
+            android:icon="@drawable/ic_donut_large_black_24dp"
+            android:title="Рубрикатор" />
+        <item
+            android:id="@+id/nav_thesaurus"
+            android:icon="@drawable/ic_book_black_24dp"
+            android:title="Тезаурус" />
+        <item
+            android:id="@+id/nav_previous"
+            android:icon="@drawable/ic_last_page_black_24dp"
+            android:title="Протоклы поиска" />
+    </group>
+
+</menu>

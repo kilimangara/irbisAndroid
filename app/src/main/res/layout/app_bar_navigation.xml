@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context="com.nikitazlain.uir.ui.activity.NavigationActivity">
+
+    <android.support.design.widget.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/AppTheme.AppBarOverlay">
+
+        <com.nikitazlain.uir.ui.customviews.CustomToolbar
+            android:id="@+id/main_toolbar"
+            android:title="@string/toolbar_title_main"
+            style="@style/ToolbarStyle">
+
+            <android.support.v7.widget.SearchView
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:id="@+id/searchView"
+                android:layout_gravity="end"
+                app:theme="@style/Theme.AppCompat.NoActionBar"/>
+        </com.nikitazlain.uir.ui.customviews.CustomToolbar>
+
+    </android.support.design.widget.AppBarLayout>
+
+    <FrameLayout
+        android:id="@+id/nav_frame"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+</LinearLayout>

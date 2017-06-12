@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <android.support.v7.widget.AppCompatTextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/database_settings"
+        android:textColor="@color/black"
+        android:textSize="20sp"/>
+    <android.support.v7.widget.AppCompatTextView
+        android:id="@+id/edtxt_database"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:layout_marginTop="10dp"/>
+    <View
+        style="@style/DividerStyle"/>
+    <android.support.v7.widget.AppCompatTextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/type_search"
+        android:textColor="@color/black"
+        android:textSize="20sp"/>
+    <android.support.v7.widget.AppCompatRadioButton
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/easy_search"
+        android:checked="true"
+        android:theme="@style/RadioButtonStyle"
+        android:textSize="25sp"/>
+
+</LinearLayout>

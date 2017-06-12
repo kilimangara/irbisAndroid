@@ -1,0 +1,28 @@
+<resources>
+    <string name="app_name">UIR</string>
+    <string name="login">Авторизация</string>
+    <string name="username_hint">Введите имя пользователя</string>
+    <string name="password_hint">Введите пароль</string>
+    <string name="login_button_text">Войти</string>
+    <string name="registration">Регистрация</string>
+    <string name="repeat_password_hint">Повторите пароль</string>
+    <string name="FIO_hint">ФИО</string>
+    <string name="email_hint">Введите email адресс</string>
+    <string name="toolbar_title_login">Войти</string>
+    <string name="toolbar_title_main">Поиск</string>
+    <string name="error_empty_field">Пустое поле</string>
+    <string name="error_password_not_equal">Пароли не совпадают</string>
+    <string name="loading">Загрузка..</string>
+    <string name="title_activity_navigation">NavigationActivity</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="action_settings">Settings</string>
+    <string name="database_settings">База данных</string>
+    <string name="type_search">Тип поиска</string>
+    <string name="easy_search">Простой поиск</string>
+    <string name="apply">apply</string>
+    <string name="placeholder_results_search">Здесь будут результаты Вашего поиска</string>
+    <string name="evristik_search">Эвристический поиск</string>
+</resources>

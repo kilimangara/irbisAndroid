@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal" android:layout_width="match_parent"
+    android:id="@+id/swiped_row"
+    android:layout_height="match_parent"
+    android:weightSum="5"
+    android:background="@color/colorAccentLight">
+    <android.support.v7.widget.AppCompatTextView
+        android:layout_width="0dp"
+        android:layout_weight="3"
+        android:textSize="24sp"
+        android:textAlignment="center"
+        android:textColor="@color/white"
+        android:layout_height="wrap_content"
+        android:text="Удалено"/>
+    <android.support.v7.widget.AppCompatTextView
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:textColor="@color/white"
+        android:textSize="22sp"
+        android:paddingBottom="5dp"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        android:paddingTop="5dp"
+        android:gravity="end"
+        android:layout_weight="2"
+        android:textStyle="bold"
+        android:text="Отменить"/>
+
+</LinearLayout>
