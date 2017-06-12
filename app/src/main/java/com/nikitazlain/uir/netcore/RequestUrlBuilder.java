@@ -18,6 +18,8 @@ public class RequestUrlBuilder {
 
     private static final String FIND_DOCUMENTS = "FindDocuments";
 
+    private static final String GET_SEARCH_RESULT_BY_PAGE = "GetSerchResultByPage";
+
     private static final String GET_CHILDREN = "GetChildren";
 
     private static final String GET_ROOT = "GetRoot";
@@ -50,6 +52,11 @@ public class RequestUrlBuilder {
     public static Uri buildFindDocuments(){
         return Uri.parse(getBaseUrl()).buildUpon().appendPath(MAIN_SEGMENT)
                 .appendPath(FIND_DOCUMENTS).build();
+    }
+
+    public static Uri buildFindDocumentsByPage(){
+        return Uri.parse(getBaseUrl()).buildUpon().appendPath(MAIN_SEGMENT)
+                .appendPath(GET_SEARCH_RESULT_BY_PAGE).build();
     }
 
 

@@ -85,7 +85,7 @@ public class DocumentsPresenter extends BasePresenter<DocumentsView, DocumentsMo
                 Log.d("test","OnNext"+Thread.currentThread().getName());
                 if(searchContatiner!=null) {
                     if (searchContatiner.getTotal() != 0) {
-                        setResults(searchContatiner.getResults());
+                        setResults(searchContatiner);
                     } else {
                         showNotFound();
                     }
@@ -109,8 +109,9 @@ public class DocumentsPresenter extends BasePresenter<DocumentsView, DocumentsMo
         });
     }
 
-    public void setResults(List<SearchResultAlt> results){
-        model.getAdapter().setResults(results);
+    public void setResults(SearchContatiner results){
+        model.getAdapter().setResults(results.getResults());
+        model.setActualSearch(results);
         view.endSerching();
     }
 

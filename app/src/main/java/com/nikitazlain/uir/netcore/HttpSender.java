@@ -7,6 +7,8 @@ import com.google.gson.GsonBuilder;
 import com.nikitazlain.uir.entity.ThesaurusEntity;
 
 import java.io.IOException;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.Callable;
 
 import io.reactivex.Observer;
@@ -25,6 +27,8 @@ public class HttpSender {
     private static final String UTID = "20170322115559";
 
     private static final String LIMIT = "10";
+
+    private static final int LIMIT_INT = 10;
 
     private static final String SEARCH_TYPE = "Поисковое условие";
 
@@ -69,5 +73,27 @@ public class HttpSender {
             }
         } ;
     }
+
+    public static Callable<String> searchDocumentsByPage(String isent, int page, Map<Integer,Boolean> relevantDocs){
+        final OkHttpClient client = new OkHttpClient();
+        FormBody formBody = new FormBody.Builder().add("utid",UTID).add("limit",LIMIT)
+                .add("offset",String.valueOf(page*LIMIT_INT)).add("isent",isent)
+                .add("relevantDocs", formatHashMap(relevantDocs))
+                .build();
+        final Request request = new Request.Builder().url(RequestUrlBuilder.buildFindDocumentsByPage().toString())
+                .post(formBody).build();
+        return new Callable<String>() {
+            @Override
+            public String call() throws Exception {
+                return client.newCall(request).execute().body().string();
+            }
+        };
+    }
+
+    private static String formatHashMap(Map<Integer, Boolean> map){
+        return map.toString().replace("{","").replace("}","").replace("=",":");
+    }
+
+
 
 }

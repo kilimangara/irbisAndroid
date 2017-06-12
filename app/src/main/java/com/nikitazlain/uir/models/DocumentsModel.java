@@ -23,15 +23,14 @@ import com.nikitazlain.uir.view.DocumentsView;
 import com.nikitazlain.uir.viewholders.DocumentViewHolder;
 
 import io.reactivex.Observable;
-import io.reactivex.Scheduler;
-import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.annotations.NonNull;
 import io.reactivex.functions.Function;
-import io.reactivex.schedulers.Schedulers;
 
 public class DocumentsModel extends BaseModel<DocumentsView, DocumentViewHolder> implements RecyclerViewClick {
 
     private final SearchResultsAdapter adapter;
+
+    private SearchContatiner actualSearch;
 
     public DocumentsModel(DocumentsView view) {
         super(view);
@@ -80,6 +79,14 @@ public class DocumentsModel extends BaseModel<DocumentsView, DocumentViewHolder>
 
     public SearchResultsAdapter getAdapter(){
        return adapter;
+    }
+
+    public SearchContatiner getActualSearch() {
+        return actualSearch;
+    }
+
+    public void setActualSearch(SearchContatiner actualSearch) {
+        this.actualSearch = actualSearch;
     }
 
     private void setSwipeBehavior(){
