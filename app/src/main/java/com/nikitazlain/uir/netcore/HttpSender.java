@@ -7,7 +7,6 @@ import com.google.gson.GsonBuilder;
 import com.nikitazlain.uir.entity.ThesaurusEntity;
 
 import java.io.IOException;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Callable;
 
@@ -76,11 +75,43 @@ public class HttpSender {
 
     public static Callable<String> searchDocumentsByPage(String isent, int page, Map<Integer,Boolean> relevantDocs){
         final OkHttpClient client = new OkHttpClient();
-        FormBody formBody = new FormBody.Builder().add("utid",UTID).add("limit",LIMIT)
-                .add("offset",String.valueOf(page*LIMIT_INT)).add("isent",isent)
-                .add("relevantDocs", formatHashMap(relevantDocs))
-                .build();
+        FormBody.Builder builder = new FormBody.Builder().add("utid",UTID).add("limit",LIMIT)
+                .add("offset",String.valueOf(page*LIMIT_INT)).add("isent",isent);
+        if(relevantDocs!=null){
+            builder.add("relevantDocs",formatHashMap(relevantDocs));
+        }
+        FormBody formBody = builder.build();
         final Request request = new Request.Builder().url(RequestUrlBuilder.buildFindDocumentsByPage().toString())
+                .post(formBody).build();
+        return new Callable<String>() {
+            @Override
+            public String call() throws Exception {
+                return client.newCall(request).execute().body().string();
+            }
+        };
+    }
+
+    public static Callable<String> searchHeruistic(String isent, Map<Integer, Boolean > relevantDocs){
+        final OkHttpClient client = new OkHttpClient();
+        FormBody.Builder builder = new FormBody.Builder().add("utid",UTID).add("limit",LIMIT).add("isent",isent);
+        if(relevantDocs!=null){
+            builder.add("relevantDocs",formatHashMap(relevantDocs));
+        }
+        FormBody formBody = builder.build();
+        final Request request = new Request.Builder().url(RequestUrlBuilder.buildSearchHeruistic().toString())
+                .post(formBody).build();
+        return new Callable<String>() {
+            @Override
+            public String call() throws Exception {
+                return client.newCall(request).execute().body().string();
+            }
+        };
+    }
+
+    public static Callable<String> getProtocol(String isent){
+        final OkHttpClient client = new OkHttpClient();
+        FormBody formBody = new FormBody.Builder().add("UTID",UTID).add("ISENT",isent).build();
+        final Request request = new Request.Builder().url(RequestUrlBuilder.buildGetProtocol().toString())
                 .post(formBody).build();
         return new Callable<String>() {
             @Override

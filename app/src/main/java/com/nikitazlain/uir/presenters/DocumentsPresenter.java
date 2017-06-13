@@ -5,13 +5,11 @@ import android.os.Bundle;
 import android.util.Log;
 
 import com.nikitazlain.uir.entity.SearchContatiner;
-import com.nikitazlain.uir.entity.SearchResultAlt;
 import com.nikitazlain.uir.models.DocumentsModel;
 import com.nikitazlain.uir.ui.activity.NavigationActivity;
 import com.nikitazlain.uir.view.DocumentsView;
 import com.nikitazlain.uir.viewholders.DocumentViewHolder;
 
-import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import io.reactivex.Observable;
@@ -19,6 +17,7 @@ import io.reactivex.ObservableSource;
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.annotations.NonNull;
+import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
@@ -26,7 +25,8 @@ import io.reactivex.schedulers.Schedulers;
 
 
 public class DocumentsPresenter extends BasePresenter<DocumentsView, DocumentsModel, DocumentViewHolder> {
-    private Disposable disposable;
+
+    private CompositeDisposable compositeDisposable;
 
     public DocumentsPresenter(DocumentsView view, DocumentsModel model) {
         super(view, model);
@@ -34,7 +34,9 @@ public class DocumentsPresenter extends BasePresenter<DocumentsView, DocumentsMo
 
     @Override
     public void onCreate(Activity activity, Bundle savedInstance) {
-       bindQuery(((NavigationActivity)activity).getQueryObservable());
+        compositeDisposable = new CompositeDisposable();
+        bindQuery(((NavigationActivity)activity).getQueryObservable());
+        bindScroll();
     }
 
     @Override
@@ -44,7 +46,44 @@ public class DocumentsPresenter extends BasePresenter<DocumentsView, DocumentsMo
 
     @Override
     public void onDestroy() {
-        if(disposable!=null && !disposable.isDisposed()) disposable.dispose();
+        if(compositeDisposable!=null && !compositeDisposable.isDisposed()) compositeDisposable.dispose();
+    }
+
+    private void bindScroll(){
+        model.scrollList().debounce(500, TimeUnit.MILLISECONDS).switchMap(new Function<DocumentsModel.RelevantDocs, ObservableSource<SearchContatiner>>() {
+            @Override
+            public ObservableSource<SearchContatiner> apply(@NonNull DocumentsModel.RelevantDocs docs) throws Exception {
+                return model.searchDocumentsByPage(docs);
+            }
+        }).onErrorResumeNext(new Function<Throwable, ObservableSource<? extends SearchContatiner>>() {
+            @Override
+            public ObservableSource<? extends SearchContatiner> apply(@NonNull Throwable throwable) throws Exception {
+                Log.d("test","onErrorResume "+throwable.getClass());
+                return Observable.empty();
+            }
+        }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Observer<SearchContatiner>() {
+            @Override
+            public void onSubscribe(@NonNull Disposable d) {
+                compositeDisposable.add(d);
+                Log.d("test","OnSubscribe "+Thread.currentThread().getName());
+            }
+
+            @Override
+            public void onNext(@NonNull SearchContatiner searchContatiner) {
+                Log.d("test","onNext "+Thread.currentThread().getName());
+                model.getAdapter().addPage(searchContatiner.getResults());
+            }
+
+            @Override
+            public void onError(@NonNull Throwable e) {
+                showError();
+            }
+
+            @Override
+            public void onComplete() {
+                Log.d("test","onComplete");
+            }
+        });
     }
 
     public void bindQuery(Observable<String> queyObservable){
@@ -77,12 +116,12 @@ public class DocumentsPresenter extends BasePresenter<DocumentsView, DocumentsMo
             @Override
             public void onSubscribe(@NonNull Disposable d) {
                 Log.d("test","OnSubscribe"+Thread.currentThread().getName());
-                DocumentsPresenter.this.disposable = d;
+                DocumentsPresenter.this.compositeDisposable.add(d);
             }
 
             @Override
             public void onNext(@NonNull SearchContatiner searchContatiner) {
-                Log.d("test","OnNext"+Thread.currentThread().getName());
+                Log.d("test","OnSubscribe"+Thread.currentThread().getName());
                 if(searchContatiner!=null) {
                     if (searchContatiner.getTotal() != 0) {
                         setResults(searchContatiner);

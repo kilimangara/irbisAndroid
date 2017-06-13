@@ -28,6 +28,10 @@ public class RequestUrlBuilder {
 
     private static final String GET_RUBRICATORS = "GetRubricators";
 
+    private static final String GET_PROTOCOL = "GetProtocol";
+
+    private static final String SEARCH_HERUISTIC = "SearchHeruistic";
+
     private static final String SEARCH_FROM_DICTIONARY = "SearchFromDictionary";
 
     public static String buildThesaurusUrl(String word){
@@ -57,6 +61,16 @@ public class RequestUrlBuilder {
     public static Uri buildFindDocumentsByPage(){
         return Uri.parse(getBaseUrl()).buildUpon().appendPath(MAIN_SEGMENT)
                 .appendPath(GET_SEARCH_RESULT_BY_PAGE).build();
+    }
+
+    public static Uri buildGetProtocol(){
+        return Uri.parse(getBaseUrl()).buildUpon().appendPath(MAIN_SEGMENT)
+                .appendPath(GET_PROTOCOL).build();
+    }
+
+    public static Uri buildSearchHeruistic(){
+        return Uri.parse(getBaseUrl()).buildUpon().appendPath(MAIN_SEGMENT)
+                .appendPath(SEARCH_HERUISTIC).build();
     }
 
 

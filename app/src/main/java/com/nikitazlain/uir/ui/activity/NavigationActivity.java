@@ -89,6 +89,10 @@ public class NavigationActivity extends AppCompatActivity
         return RxWidgets.fromSearchView(searchView);
     }
 
+    public Observable<Boolean> getClickItemObservable(){
+        return RxWidgets.fromMenu(toolbar.getMenu(), R.id.evristik_search);
+    }
+
     private void switchToSearchFragment(){
         currFragment =SEARCH_FRAGMENT;
         fragmentManager.beginTransaction().replace(R.id.nav_frame, mainFragment).commit();

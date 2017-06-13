@@ -1,7 +1,10 @@
 package com.nikitazlain.uir.utils;
 
+import android.support.annotation.IdRes;
 import android.support.v7.widget.SearchView;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 
 import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;
@@ -40,7 +43,7 @@ public class RxWidgets {
                    e.onNext(searchView.getQuery().toString());
                }
            }
-       }).doOnComplete(new Action() {
+       }).doOnDispose(new Action() {
            @Override
            public void run() throws Exception {
                Log.d("test","doOnComplete");
@@ -48,5 +51,27 @@ public class RxWidgets {
            }
        });
         return observable;
+    }
+
+    public static Observable<Boolean> fromMenu(Menu menu, @IdRes int resId){
+        final MenuItem item = menu.getItem(resId);
+        return Observable.create(new ObservableOnSubscribe<Boolean>() {
+            @Override
+            public void subscribe(@NonNull final ObservableEmitter<Boolean> e) throws Exception {
+                item.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+                    @Override
+                    public boolean onMenuItemClick(MenuItem menuItem) {
+                        e.onNext(true);
+                        return true;
+                    }
+                });
+            }
+        }).doOnDispose(new Action() {
+            @Override
+            public void run() throws Exception {
+                item.setOnMenuItemClickListener(null);
+            }
+        });
+
     }
 }

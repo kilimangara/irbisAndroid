@@ -22,7 +22,13 @@ import com.nikitazlain.uir.ui.adapter.SearchResultsAdapter;
 import com.nikitazlain.uir.view.DocumentsView;
 import com.nikitazlain.uir.viewholders.DocumentViewHolder;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import io.reactivex.Observable;
+import io.reactivex.ObservableEmitter;
+import io.reactivex.ObservableOnSubscribe;
 import io.reactivex.annotations.NonNull;
 import io.reactivex.functions.Function;
 
@@ -32,28 +38,35 @@ public class DocumentsModel extends BaseModel<DocumentsView, DocumentViewHolder>
 
     private SearchContatiner actualSearch;
 
-    public DocumentsModel(DocumentsView view) {
+    private Observable<RelevantDocs> eventObservable;
+
+    public DocumentsModel(final DocumentsView view) {
         super(view);
         adapter = new SearchResultsAdapter();
         view.viewHolder.recyclerView.addItemDecoration(new DividerItemDecoration(getContext(), LinearLayoutManager.VERTICAL ));
-        LinearLayoutManager manager = new LinearLayoutManager(getContext());
+        final LinearLayoutManager manager = new LinearLayoutManager(getContext());
         view.viewHolder.recyclerView.setLayoutManager(manager);
         adapter.setListener(this);
         view.viewHolder.recyclerView.setAdapter(adapter);
-        view.viewHolder.recyclerView.addOnScrollListener(new RecyclerPagination(manager) {
+        eventObservable=Observable.create(new ObservableOnSubscribe<RelevantDocs>() {
             @Override
-            protected void loadNextPage() {
-                adapter.addPage();
-            }
+            public void subscribe(@NonNull final ObservableEmitter<RelevantDocs> e) throws Exception {
+                view.viewHolder.recyclerView.addOnScrollListener(new RecyclerPagination(manager) {
+                    @Override
+                    protected void loadNextPage() {
+                        e.onNext(new RelevantDocs(getActualSearch().getIsent(), adapter.relevantDocs(), adapter.getCurrentPage()+1));
+                    }
 
-            @Override
-            public int getCurrentPage() {
-                return adapter.getCurrentPage();
-            }
+                    @Override
+                    public int getCurrentPage() {
+                        return adapter.getCurrentPage();
+                    }
 
-            @Override
-            public boolean isLastPage() {
-                return adapter.getIsLastPage();
+                    @Override
+                    public boolean isLastPage() {
+                        return adapter.getIsLastPage();
+                    }
+                });
             }
         });
         setSwipeBehavior();
@@ -75,6 +88,23 @@ public class DocumentsModel extends BaseModel<DocumentsView, DocumentViewHolder>
                         return gson.fromJson(s, SearchContatiner.class);
                     }
                 });
+    }
+
+    public Observable<SearchContatiner> searchDocumentsByPage(RelevantDocs docs){
+        Log.d("test","searchDocumentsByPage inner "+Thread.currentThread().getName() +" page "+docs.page);
+        return Observable.fromCallable(HttpSender.searchDocumentsByPage(String.valueOf(docs.getIsent()),
+                docs.getPage(), docs.getRelevantDocs())).map(new Function<String, SearchContatiner>() {
+            @Override
+            public SearchContatiner apply(@NonNull String s) throws Exception {
+                Gson gson = new GsonBuilder().setPrettyPrinting().create();
+                Log.d("test","response "+s);
+                return gson.fromJson(s, SearchContatiner.class);
+            }
+        });
+    }
+
+    public Observable<RelevantDocs> scrollList(){
+        return eventObservable;
     }
 
     public SearchResultsAdapter getAdapter(){
@@ -120,5 +150,36 @@ public class DocumentsModel extends BaseModel<DocumentsView, DocumentViewHolder>
         Intent intent = new Intent(getContext(), SearchItemActivity.class);
         intent.putExtra(SearchItemActivity.ANNOTATIONS, resut.getFullDescription());
         getContext().startActivity(intent);
+    }
+
+    public class RelevantDocs{
+
+        List<Integer> relevantDocs;
+
+        long isent;
+
+        int page;
+
+        protected RelevantDocs(long isent, List<Integer> relevantDocs, int page){
+            this.relevantDocs = relevantDocs;
+            this.isent = isent;
+            this.page =page;
+        }
+
+        public Map<Integer,Boolean> getRelevantDocs() {
+            Map<Integer, Boolean> map = new HashMap<>();
+            for(Integer integer: relevantDocs){
+                map.put(integer, true);
+            }
+            return map;
+        }
+
+        public long getIsent() {
+            return isent;
+        }
+
+        public int getPage() {
+            return page;
+        }
     }
 }

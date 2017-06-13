@@ -49,4 +49,8 @@ public class SearchResultAlt {
     public void setViewed(boolean viewed) {
         isViewed = viewed;
     }
+
+    public int getNum() {
+        return num;
+    }
 }

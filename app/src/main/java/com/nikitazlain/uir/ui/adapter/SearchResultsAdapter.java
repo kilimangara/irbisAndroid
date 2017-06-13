@@ -32,12 +32,30 @@ public class SearchResultsAdapter extends RecyclerView.Adapter<SearchResultsAdap
 
     public void setResults(List<SearchResultAlt> results){
         this.searchResults = results;
-        Log.d("test","results setted "+results.size());
+        isLastPage=false;
         notifyDataSetChanged();
     }
 
-    public void addPage(){
+    public List<Integer> relevantDocs(){
+        List<Integer> rel = new ArrayList<>();
+        for(SearchResultAlt searchResultAlt: searchResults){
+            if(searchResultAlt.isRelelevant()){
+                rel.add(searchResultAlt.getNum());
+            }
+        }
+        return rel;
+    }
 
+    public void addPage(List<SearchResultAlt> results){
+        if(results.size()==0){
+            isLastPage = true;
+        } else {
+            page++;
+            int i =results.size();
+            int j =searchResults.size();
+            this.searchResults.addAll(results);
+            notifyItemRangeChanged(j-1, i);
+        }
     }
 
     public void pendingRemoval(final int position){
@@ -75,7 +93,6 @@ public class SearchResultsAdapter extends RecyclerView.Adapter<SearchResultsAdap
     }
 
     public void setListener(RecyclerViewClick clickListener){
-        Log.d("test","listener setted");
         this.clickListener = clickListener;
     }
 
@@ -91,6 +108,7 @@ public class SearchResultsAdapter extends RecyclerView.Adapter<SearchResultsAdap
 
     public void reset(){
         searchResults = new ArrayList<>();
+        isLastPage =false;
         notifyDataSetChanged();
     }
 
